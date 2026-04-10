@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOIR BREW — Artisan Coffee</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0806;
+    --espresso: #1a0f07;
+    --brown: #3d1f0d;
+    --caramel: #c4752a;
+    --gold: #e8a94a;
+    --cream: #f5ead8;
+    --light: #fdf8f0;
+    --text-muted: #9a7a5a;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 900;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(10,8,6,0.95), transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s, color 0.3s;
+  }
+
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  .cart-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .cart-btn:hover { background: var(--caramel); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 160px 60px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(64px, 7vw, 110px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-bottom: 40px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-desc {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 380px;
+    margin-bottom: 56px;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 18px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--caramel);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(200, 120, 40, 0.3);
+  }
+
+  .btn-ghost {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: transparent;
+    border: 1px solid rgba(245,234,216,0.3);
+    padding: 18px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 40%, #3d1f0d 0%, #1a0f07 40%, #0a0806 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .coffee-visual {
+    width: 320px;
+    height: 320px;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-2deg); }
+    50% { transform: translateY(-20px) rotate(2deg); }
+  }
+
+  .coffee-cup-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .steam-line {
+    stroke-dasharray: 20;
+    stroke-dashoffset: 20;
+    animation: steam 2s ease-in-out infinite;
+  }
+
+  .steam-line:nth-child(2) { animation-delay: 0.5s; }
+  .steam-line:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes steam {
+    0% { stroke-dashoffset: 20; opacity: 0; }
+    50% { opacity: 1; }
+    100% { stroke-dashoffset: -20; opacity: 0; }
+  }
+
+  .hero-right::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 80px;
+    background: linear-gradient(to right, var(--black), transparent);
+    z-index: 2;
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(245,234,216,0.1);
+    border-bottom: 1px solid rgba(245,234,216,0.1);
+  }
+
+  .stat {
+    padding: 48px 40px;
+    border-right: 1px solid rgba(245,234,216,0.1);
+    text-align: center;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* MENU SECTION */
+  .section {
+    padding: 120px 60px;
+    position: relative;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 80px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* MENU GRID */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(245,234,216,0.05);
+  }
+
+  .menu-item {
+    background: var(--espresso);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s;
+    group: true;
+  }
+
+  .menu-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--brown), var(--espresso));
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .menu-item:hover::before { opacity: 1; }
+  .menu-item:hover { transform: scale(1.02); z-index: 2; }
+
+  .menu-item-content { position: relative; z-index: 1; }
+
+  .menu-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .menu-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .menu-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  .menu-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .menu-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--gold);
+  }
+
+  .add-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .add-btn:hover { background: var(--caramel); }
+
+  .menu-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    padding: 4px 10px;
+    z-index: 2;
+  }
+
+  /* FEATURED BANNER */
+  .featured-banner {
+    margin: 0 60px;
+    background: linear-gradient(135deg, var(--brown) 0%, #2a1208 100%);
+    padding: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured-banner::before {
+    content: '"';
+    position: absolute;
+    right: 80px;
+    top: -20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 300px;
+    color: var(--gold);
+    opacity: 0.06;
+    line-height: 1;
+  }
+
+  .featured-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .featured-desc {
+    color: var(--text-muted);
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  /* SUBSCRIPTION / PAYMENT */
+  .payment-section {
+    padding: 120px 60px;
+    background: var(--espresso);
+    position: relative;
+  }
+
+  .payment-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 80px;
+    background: rgba(245,234,216,0.05);
+  }
+
+  .plan-card {
+    background: var(--black);
+    padding: 56px 48px;
+    position: relative;
+    transition: transform 0.3s;
+  }
+
+  .plan-card.featured {
+    background: var(--brown);
+    transform: scaleY(1.02);
+  }
+
+  .plan-card:hover { transform: translateY(-4px); }
+  .plan-card.featured:hover { transform: scaleY(1.02) translateY(-4px); }
+
+  .plan-badge {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    padding: 6px 20px;
+  }
+
+  .plan-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .plan-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .plan-price span {
+    font-size: 24px;
+    font-weight: 400;
+    vertical-align: top;
+    padding-top: 16px;
+    display: inline-block;
+    color: var(--text-muted);
+  }
+
+  .plan-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 48px;
+  }
+
+  .plan-features li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(245,234,216,0.08);
+    font-size: 16px;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .plan-features li::before {
+    content: '✦';
+    color: var(--gold);
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  /* CHECKOUT MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,8,6,0.92);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--espresso);
+    width: 100%;
+    max-width: 560px;
+    padding: 64px;
+    position: relative;
+    border: 1px solid rgba(245,234,216,0.1);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .modal-close:hover { color: var(--gold); }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .modal-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+  }
+
+  .order-summary {
+    background: rgba(245,234,216,0.04);
+    border: 1px solid rgba(245,234,216,0.08);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .order-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 16px;
+  }
+
+  .order-row.total {
+    border-top: 1px solid rgba(245,234,216,0.15);
+    margin-top: 8px;
+    padding-top: 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--gold);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(245,234,216,0.05);
+    border: 1px solid rgba(245,234,216,0.15);
+    color: var(--cream);
+    padding: 14px 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .form-input:focus { border-color: var(--gold); }
+  .form-input::placeholder { color: var(--text-muted); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .payment-methods {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .pay-method {
+    flex: 1;
+    padding: 14px;
+    border: 1px solid rgba(245,234,216,0.15);
+    background: transparent;
+    color: var(--cream);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .pay-method.active, .pay-method:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(232, 169, 74, 0.08);
+  }
+
+  .pay-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-top: 20px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    background: var(--brown);
+    border: 1px solid var(--gold);
+    padding: 20px 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--cream);
+    z-index: 2000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* FOOTER */
+  footer {
+    padding: 80px 60px 40px;
+    border-top: 1px solid rgba(245,234,216,0.1);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .footer-tagline {
+    font-size: 16px;
+    color: var(--text-muted);
+    max-width: 280px;
+    line-height: 1.7;
+  }
+
+  .footer-col h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    padding: 6px 0;
+    font-size: 16px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .footer-col ul li:hover { color: var(--cream); }
+
+  .footer-bottom {
+    padding: 24px 60px;
+    border-top: 1px solid rgba(245,234,216,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* CART BADGE */
+  .cart-count {
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 120px 24px 60px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .menu-grid { grid-template-columns: 1fr; }
+    .section { padding: 80px 24px; }
+    .featured-banner { margin: 0 24px; padding: 48px 32px; grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .plan-card.featured { transform: none; }
+    footer { grid-template-columns: 1fr 1fr; gap: 40px; padding: 60px 24px 40px; }
+    .payment-section { padding: 80px 24px; }
+    .modal { padding: 40px 28px; margin: 20px; }
+    .footer-bottom { padding: 24px; flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✦ Noir Brew</div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#subscribe">Subscribe</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <button class="cart-btn" onclick="openCart()">Cart <span class="cart-count" id="cartCount">0</span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Est. 2019 — Single Origin</div>
+    <h1>Craft<br>Coffee<br><em>Perfected.</em></h1>
+    <p class="hero-desc">Sourced from the world's finest estates. Roasted with obsessive precision. Delivered to your door.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">Order Now</a>
+      <a href="#subscribe" class="btn-ghost">Subscribe & Save</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image">
+      <div class="coffee-visual">
+        <svg class="coffee-cup-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Steam -->
+          <path class="steam-line" d="M110 80 Q120 60 110 40" stroke="#c4752a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path class="steam-line" d="M150 75 Q160 55 150 35" stroke="#c4752a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path class="steam-line" d="M190 80 Q200 60 190 40" stroke="#c4752a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Saucer -->
+          <ellipse cx="150" cy="230" rx="100" ry="16" fill="#3d1f0d"/>
+          <ellipse cx="150" cy="226" rx="90" ry="10" fill="#2a1208"/>
+          <!-- Cup body -->
+          <path d="M90 140 Q85 220 150 222 Q215 220 210 140 Z" fill="#1a0f07"/>
+          <path d="M90 140 Q85 220 150 222 Q215 220 210 140 Z" fill="url(#cupGrad)"/>
+          <!-- Cup rim -->
+          <ellipse cx="150" cy="140" rx="60" ry="12" fill="#2a1208"/>
+          <!-- Coffee surface -->
+          <ellipse cx="150" cy="140" rx="55" ry="10" fill="#3d1f0d"/>
+          <!-- Latte art -->
+          <path d="M130 138 Q140 130 150 138 Q160 146 170 138" stroke="#c4752a" stroke-width="1.5" fill="none" opacity="0.8"/>
+          <path d="M135 143 Q145 135 155 143" stroke="#c4752a" stroke-width="1" fill="none" opacity="0.5"/>
+          <!-- Handle -->
+          <path d="M210 160 Q245 160 245 180 Q245 200 210 200" stroke="#3d1f0d" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M210 160 Q240 160 240 180 Q240 200 210 200" stroke="#2a1208" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- Shine -->
+          <path d="M105 160 Q100 180 103 200" stroke="rgba(255,255,255,0.05)" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="cupGrad" x1="90" y1="140" x2="210" y2="220" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#3d1f0d" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#0a0806" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-number">14</div>
+    <div class="stat-label">Origins Sourced</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">38k</div>
+    <div class="stat-label">Happy Drinkers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">97°</div>
+    <div class="stat-label">Optimal Brew Temp</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">4.9</div>
+    <div class="stat-label">Average Rating</div>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="section" id="menu">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Our Menu</div>
+      <h2 class="section-title">Every Cup,<br><em>A Journey.</em></h2>
+    </div>
+  </div>
+  <div class="menu-grid">
+    <div class="menu-item" onclick="addToCart('Espresso Classico', 4.50)">
+      <div class="menu-item-content">
+        <span class="menu-icon">☕</span>
+        <div class="menu-name">Espresso Classico</div>
+        <div class="menu-desc">Double ristretto pulled at 9 bar. Ethiopian Yirgacheffe. Bright, floral, citrus notes.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$4.50</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="addToCart('Oat Milk Latte', 6.80)">
+      <div class="menu-badge">Popular</div>
+      <div class="menu-item-content">
+        <span class="menu-icon">🥛</span>
+        <div class="menu-name">Oat Milk Latte</div>
+        <div class="menu-desc">Velvety microfoam, smooth body. Colombian single-origin. Chocolate and walnut finish.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$6.80</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="addToCart('Cold Brew Reserve', 7.50)">
+      <div class="menu-item-content">
+        <span class="menu-icon">🧊</span>
+        <div class="menu-name">Cold Brew Reserve</div>
+        <div class="menu-desc">18-hour slow steep. Guatemala Antigua beans. Deep, chocolatey, zero bitterness.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$7.50</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="addToCart('Cortado', 5.50)">
+      <div class="menu-item-content">
+        <span class="menu-icon">🫗</span>
+        <div class="menu-name">Cortado</div>
+        <div class="menu-desc">Equal parts espresso and steamed milk. Brazilian Santos. Nutty, bold, balanced.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$5.50</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="addToCart('Spiced Mocha', 7.20)">
+      <div class="menu-badge">Seasonal</div>
+      <div class="menu-item-content">
+        <span class="menu-icon">🍫</span>
+        <div class="menu-name">Spiced Mocha</div>
+        <div class="menu-desc">Valrhona chocolate, cardamom, and cinnamon. Warming, rich, and deeply indulgent.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$7.20</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+    <div class="menu-item" onclick="addToCart('Pour Over Flight', 12.00)">
+      <div class="menu-item-content">
+        <span class="menu-icon">🫖</span>
+        <div class="menu-name">Pour Over Flight</div>
+        <div class="menu-desc">Three origins. Three methods. A full sensory exploration of our curated seasonals.</div>
+        <div class="menu-footer">
+          <div class="menu-price">$12.00</div>
+          <button class="add-btn">Add +</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED BANNER -->
+<div class="featured-banner" id="about">
+  <div>
+    <div class="featured-tag">✦ Our Commitment</div>
+    <h3 class="featured-title">From Farm<br>to Your Cup</h3>
+    <p class="featured-desc">We work directly with 14 family-run farms across Ethiopia, Colombia, Guatemala, and Brazil. Every harvest is traceable. Every roast is dated. Every cup tells a story.</p>
+    <a href="#subscribe" class="btn-primary">Start Your Journey</a>
+  </div>
+  <div>
+    <div style="font-family: 'Playfair Display', serif; font-size: 72px; color: var(--gold); opacity: 0.3; line-height: 1; margin-bottom: 20px;">☕</div>
+    <div style="font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 16px;">Direct Trade</div>
+    <p style="color: var(--text-muted); font-size: 16px; line-height: 1.8;">We pay a minimum 40% above Fair Trade pricing to our partner farms — because extraordinary coffee requires extraordinary care at every step.</p>
+  </div>
+</div>
+
+<!-- SUBSCRIPTION / PAYMENT PLANS -->
+<section class="payment-section" id="subscribe">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Subscribe & Save</div>
+      <h2 class="section-title">Your Perfect<br><em>Ritual.</em></h2>
+    </div>
+    <p style="max-width: 320px; color: var(--text-muted); font-size: 17px; line-height: 1.8;">Freshly roasted coffee, delivered on your schedule. Cancel or pause anytime.</p>
+  </div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <div class="plan-name">The Curious</div>
+      <div class="plan-price"><span>$</span>24</div>
+      <div class="plan-period">/ month · 250g weekly</div>
+      <ul class="plan-features">
+        <li>1 origin per month</li>
+        <li>Whole bean or ground</li>
+        <li>Free shipping</li>
+        <li>Tasting notes card</li>
+        <li>Skip or pause anytime</li>
+      </ul>
+      <button class="btn-ghost" style="width: 100%;" onclick="openPayment('The Curious', 24)">Choose Plan</button>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">The Devotee</div>
+      <div class="plan-price"><span>$</span>48</div>
+      <div class="plan-period">/ month · 500g weekly</div>
+      <ul class="plan-features">
+        <li>3 rotating origins</li>
+        <li>Custom grind profile</li>
+        <li>Priority roast dates</li>
+        <li>Brew guide included</li>
+        <li>15% off merchandise</li>
+      </ul>
+      <button class="btn-primary" style="width: 100%;" onclick="openPayment('The Devotee', 48)">Choose Plan</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">The Connoisseur</div>
+      <div class="plan-price"><span>$</span>89</div>
+      <div class="plan-period">/ month · 1kg weekly</div>
+      <ul class="plan-features">
+        <li>Exclusive micro-lots</li>
+        <li>Quarterly farm report</li>
+        <li>Direct line to roaster</li>
+        <li>Early access releases</li>
+        <li>Complimentary cupping</li>
+      </ul>
+      <button class="btn-ghost" style="width: 100%;" onclick="openPayment('The Connoisseur', 89)">Choose Plan</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">NOIR BREW</div>
+    <p class="footer-tagline">Obsessively sourced. Carefully roasted. Delivered with love. Coffee as it should be.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Order</h4>
+    <ul>
+      <li>Menu</li>
+      <li>Subscriptions</li>
+      <li>Gift Cards</li>
+      <li>Merchandise</li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Learn</h4>
+    <ul>
+      <li>Our Farms</li>
+      <li>Roasting Process</li>
+      <li>Brew Guides</li>
+      <li>Journal</li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Company</h4>
+    <ul>
+      <li>About Us</li>
+      <li>Sustainability</li>
+      <li>Wholesale</li>
+      <li>Contact</li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Noir Brew. All rights reserved.</p>
+  <p>Secure payments · Free shipping over $40 · Cancel anytime</p>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closePaymentModal()">✕ Close</button>
+    <div class="modal-title" id="modalTitle">Complete Order</div>
+    <div class="modal-subtitle" id="modalSubtitle">Secure checkout — cancel anytime</div>
+
+    <div class="order-summary" id="orderSummary"></div>
+
+    <div class="payment-methods" style="flex-wrap: wrap;">
+      <button class="pay-method active" onclick="selectPayMethod(this, 'card')">
+        <span class="pay-icon">💳</span>Card
+      </button>
+      <button class="pay-method" onclick="selectPayMethod(this, 'upi')">
+        <span class="pay-icon">🇮🇳</span>UPI
+      </button>
+      <button class="pay-method" onclick="selectPayMethod(this, 'apple')">
+        <span class="pay-icon">🍎</span>Apple Pay
+      </button>
+      <button class="pay-method" onclick="selectPayMethod(this, 'paypal')">
+        <span class="pay-icon">🅿</span>PayPal
+      </button>
+      <button class="pay-method" onclick="selectPayMethod(this, 'crypto')">
+        <span class="pay-icon">₿</span>Crypto
+      </button>
+    </div>
+
+    <div id="cardForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Card Number</label>
+        <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Expiry</label>
+          <input type="text" class="form-input" placeholder="MM / YY" maxlength="7">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CVV</label>
+          <input type="text" class="form-input" placeholder="•••" maxlength="3">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Name on Card</label>
+        <input type="text" class="form-input" placeholder="Your full name">
+      </div>
+    </div>
+
+    <div id="upiForm" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">UPI ID</label>
+        <input type="text" class="form-input" id="upiId" placeholder="yourname@upi">
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+        <div style="font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.2em; color:var(--text-muted); width:100%; margin-bottom:4px; text-transform:uppercase;">Supported Apps</div>
+        <span style="background:rgba(245,234,216,0.06); border:1px solid rgba(245,234,216,0.12); padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; color:var(--cream); letter-spacing:0.1em;">📱 GPay</span>
+        <span style="background:rgba(245,234,216,0.06); border:1px solid rgba(245,234,216,0.12); padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; color:var(--cream); letter-spacing:0.1em;">💜 PhonePe</span>
+        <span style="background:rgba(245,234,216,0.06); border:1px solid rgba(245,234,216,0.12); padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; color:var(--cream); letter-spacing:0.1em;">🪙 Paytm</span>
+        <span style="background:rgba(245,234,216,0.06); border:1px solid rgba(245,234,216,0.12); padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; color:var(--cream); letter-spacing:0.1em;">🔵 BHIM</span>
+        <span style="background:rgba(245,234,216,0.06); border:1px solid rgba(245,234,216,0.12); padding:8px 14px; font-family:'Space Mono',monospace; font-size:10px; color:var(--cream); letter-spacing:0.1em;">🏦 Any UPI</span>
+      </div>
+      <div style="background:rgba(232,169,74,0.08); border:1px solid rgba(232,169,74,0.2); padding:16px 20px; font-size:15px; color:var(--text-muted); line-height:1.7; margin-bottom:20px;">
+        ✦ A payment request will be sent to your UPI app. Open the app to approve within <span style="color:var(--gold);">3 minutes</span>.
+      </div>
+    </div> text-align:center; padding: 32px 0; color: var(--text-muted); font-size: 17px; line-height: 1.8;">
+      You'll be redirected to complete payment securely.<br>
+      <span style="color: var(--gold);">Your order will be held for 15 minutes.</span>
+    </div>
+
+    <button class="btn-primary" style="width: 100%; font-size: 13px; padding: 20px;" onclick="processPayment()">
+      Complete Purchase →
+    </button>
+
+    <div class="secure-badge">🔒 256-bit SSL encryption · PCI DSS compliant · Safe & secure</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let cart = [];
+  let currentOrder = null;
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    document.getElementById('cartCount').textContent = cart.length;
+    showToast('✦ ' + name + ' added to cart');
+  }
+
+  function openCart() {
+    if (cart.length === 0) { showToast('Your cart is empty — add some coffee!'); return; }
+    const total = cart.reduce((s, i) => s + i.price, 0);
+    currentOrder = { items: cart, total };
+    buildModal('Your Order', 'Review and complete your purchase', cart, total);
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function openPayment(name, price) {
+    currentOrder = { items: [{ name, price }], total: price };
+    buildModal('Subscribe — ' + name, 'First month · Cancel anytime', [{ name, price }], price);
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+
+  function buildModal(title, subtitle, items, total) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalSubtitle').textContent = subtitle;
+    let html = '';
+    items.forEach(i => {
+      html += `<div class="order-row"><span>${i.name}</span><span>$${i.price.toFixed(2)}</span></div>`;
+    });
+    html += `<div class="order-row" style="color: var(--text-muted); font-size:14px;"><span>Shipping</span><span>Free</span></div>`;
+    html += `<div class="order-row total"><span>Total</span><span>$${total.toFixed(2)}</span></div>`;
+    document.getElementById('orderSummary').innerHTML = html;
+  }
+
+  function closePaymentModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) closePaymentModal();
+  }
+
+  function selectPayMethod(btn, method) {
+    document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const isCard = method === 'card';
+    const isUPI = method === 'upi';
+    document.getElementById('cardForm').style.display = isCard ? 'block' : 'none';
+    document.getElementById('upiForm').style.display = isUPI ? 'block' : 'none';
+    document.getElementById('altPayForm').style.display = (!isCard && !isUPI) ? 'block' : 'none';
+    const altMsg = {
+      apple: '🍎 Apple Pay — authenticate with Face ID or Touch ID.',
+      paypal: '🅿 PayPal — you\'ll be redirected to your PayPal account.',
+      crypto: '₿ Crypto — BTC, ETH, USDC accepted via Coinbase Commerce.'
+    };
+    if (!isCard && !isUPI) document.getElementById('altPayForm').innerHTML = (altMsg[method] || '') + '<br><span style="color:var(--gold)">Your order will be held for 15 minutes.</span>';
+  }
+
+
+
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value = v.match(/.{1,4}/g)?.join(' ') || v;
+  }
+
+  function processPayment() {
+    closePaymentModal();
+    cart = [];
+    document.getElementById('cartCount').textContent = '0';
+    showToast('✦ Order confirmed! Roasting begins tomorrow.');
+  }
+
+  // Animate stats on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.style.animation = 'fadeInUp 0.6s ease forwards';
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stat, .menu-item, .plan-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stat, .menu-item, .plan-card').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
